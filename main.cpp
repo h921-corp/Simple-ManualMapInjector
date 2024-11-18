@@ -26,36 +26,6 @@ DWORD GetProcessIDByName(const char *processName) {
     return 0;
 }
 
-DWORD GetProcessIDByName(const char *processName) {
-    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (hSnapshot == INVALID_HANDLE_VALUE) {
-        char fuck3[1024];
-        snprintf(fuck3, sizeof(fuck3), "[?] Snapshot maken gefaald. Foutcode: %lu", GetLastError());
-        fuckoff(fuck3);
-        return 0;
-    }
-
-    PROCESSENTRY32 pe32;
-    pe32.dwSize = sizeof(PROCESSENTRY32);
-
-    if (!Process32First(hSnapshot, &pe32)) {
-        char fuck4[1024];
-        snprintf(fuck4, sizeof(fuck4), "[?] Eerste proces verkijgen gefaald. Foutcode: %lu", GetLastError());
-        fuckoff(fuck4);
-        CloseHandle(hSnapshot);
-        return 0;
-    }
-
-    do {
-        if (strcmp(pe32.szExeFile, processName) == 0) {
-            CloseHandle(hSnapshot);
-            return pe32.th32ProcessID;
-        }
-    } while (Process32Next(hSnapshot, &pe32));
-
-    CloseHandle(hSnapshot);
-    return 0;
-}
 
 // Helper to load a DLL into a process using Manual Mapping
 bool ManualMap(HANDLE hProcess, const char* dllPath) {
